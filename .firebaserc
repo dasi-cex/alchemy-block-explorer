@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "alchemy-university"
+  },
+  "targets": {
+    "alchemy-university": {
+      "hosting": {
+        "ng-blockexplorer": [
+          "alchemy-university"
+        ]
+      }
+    }
+  }
+}
