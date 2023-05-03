@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,14 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'ng-blockexplorer';
+
+  ngOnInit(): void {
+    if (environment.production) {
+      console.log('Running prod envronment');
+    }
+    if (!environment.production) {
+      console.log('Running development environment');
+    }
+    
+  }
 }

@@ -1,2 +1,1 @@
-export { onGetBlockNumber } from './get-block-number';
-
+export { onCallFetchBlockData } from './on-call-fetch-block-data';
