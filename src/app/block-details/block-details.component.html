@@ -1,1 +1,5 @@
-<p>block-details works!</p>
+<div class="container">
+  <div *ngIf="blockData$ | async as blockData" class="block-details">
+    <div>{{ blockData }}</div>
+  </div>
+</div>

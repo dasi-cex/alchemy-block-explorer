@@ -3,7 +3,7 @@ import * as functions from 'firebase-functions';
 /////// DEPLOYABLE FUNCTIONS ///////
 
 const fetchBlockData = async () => {
-  const message = 'Newer Hello from Cloud Functions!';
+  const message = 'Newest Hello from Cloud Functions!';
   console.log('fetchBlockData processed with this response', message);
   return message;
 }

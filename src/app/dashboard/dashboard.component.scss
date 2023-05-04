@@ -1,0 +1,19 @@
+.container {
+  width: 100%;
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+  margin-top: 32px;
+  max-width: 600px;
+  display: flex;
+  flex-flow: column wrap;
+}
+
+button {
+  width: 400px;
+  max-width: 90%;
+}

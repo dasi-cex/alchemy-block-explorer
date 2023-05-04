@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -12,13 +12,16 @@ import { TransactionDetailsComponent } from './transaction-details/transaction-d
 import { AccountDetailsComponent } from './account-details/account-details.component';
 import { StoreModule } from '@ngrx/store';
 import { alchemyReducer } from './state/alchemy.reducer';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 @NgModule({
   declarations: [
     AppComponent,
     BlockDetailsComponent,
     TransactionDetailsComponent,
-    AccountDetailsComponent
+    AccountDetailsComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,
@@ -33,6 +36,7 @@ import { alchemyReducer } from './state/alchemy.reducer';
       return functions;
     }),
     StoreModule.forRoot({alchemyData: alchemyReducer}, {}),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
   ],
   providers: [],
   bootstrap: [AppComponent]

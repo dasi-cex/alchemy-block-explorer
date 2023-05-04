@@ -3,7 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AlchemyService } from '../services/alchemy.service';
 import { BlockActions, BlockApiActions } from '../state/alchemy.actions';
-import { environment } from 'src/environments/environment';
+import { Observable, map, tap } from 'rxjs';
+import { Block } from 'alchemy-sdk';
 
 @Component({
   selector: 'app-block-details',
@@ -12,6 +13,8 @@ import { environment } from 'src/environments/environment';
 })
 export class BlockDetailsComponent {
 
+  blockData$!: Observable<Block>;
+
   constructor(
     private route: ActivatedRoute,
     private store: Store,
@@ -19,7 +22,7 @@ export class BlockDetailsComponent {
   ) {}
 
   ngOnInit() {
-    let blockNumber = this.route.snapshot.paramMap.get('blockNumber');
+    let blockNumber = this.route.snapshot.paramMap.get('blockNumber'); // Load in blocknumber parameter if it exists
     console.log('Fetching data for this block number', blockNumber);
     if (!blockNumber) {
       console.log('No block number specified, fetching latest block');
@@ -30,11 +33,16 @@ export class BlockDetailsComponent {
 
   getBlockData(blockNumber: string) {
     this.store.dispatch(BlockActions.fetchBlockData({blockNumber}));
-    this.alchemyService.fetchBlockData(blockNumber)
-      .subscribe(blockData => {
-        this.store.dispatch(BlockApiActions.retrievedBlockData({blockData}));
-        console.log('Loaded this block data into component', blockData);
-      });
+    this.blockData$ = this.alchemyService.fetchBlockData(blockNumber)
+      .pipe(
+        map(blockData => {
+          console.log('Loaded this block data into component', blockData);
+          return blockData;
+        }),
+        tap(blockData => {
+          this.store.dispatch(BlockApiActions.retrievedBlockData({blockData}));  
+        })
+    )
   }
 
 }
