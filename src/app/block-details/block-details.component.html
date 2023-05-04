@@ -1,5 +1,6 @@
 <div class="container">
   <div *ngIf="blockData$ | async as blockData" class="block-details">
-    <div>{{ blockData }}</div>
+    <div>Block Number: {{ blockData.number }}</div>
+    <div>Transaction Count: {{ blockData.transactions.length }}</div>
   </div>
 </div>

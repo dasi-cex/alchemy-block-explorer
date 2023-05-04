@@ -7,4 +7,6 @@ import { Component } from '@angular/core';
 })
 export class DashboardComponent {
 
+  // TODO: Load the most recent 10 blocks for the user to click on and explore
+
 }
