@@ -27,12 +27,38 @@ export class AlchemyService {
         map(blockData => {
           console.log('Fetched this block data:', blockData);
           if (!blockData) {
-            throw new Error(`Error fetching block data: ${blockData}`);
+            throw new Error(`Error fetching block data for block number ${blockNumber}`);
           }
           return blockData;
         }),
         catchError(error => {
           console.log('Error fetching block data', error);
+          return throwError(() => new Error(error));
+        })
+      );
+
+    return res;
+  }
+
+  fetchRecentBlockNumbers(): Observable<string[]> {
+    console.log('Submitting getRecentBlockNumbers to server');
+
+    const fetchRecentBlockNumbersHttpCall: () => Observable<string[]> = httpsCallableData(
+      this.functions,
+      PublicFunctionNames.ON_CALL_FETCH_RECENT_BLOCK_NUMBERS
+    );
+    const res = fetchRecentBlockNumbersHttpCall()
+      .pipe(
+        take(1),
+        map(recentBlockNumbers => {
+          console.log('Fetched these recent block numbers:', recentBlockNumbers);
+          if (!recentBlockNumbers) {
+            throw new Error(`Error fetching recent block numbers`);
+          }
+          return recentBlockNumbers;
+        }),
+        catchError(error => {
+          console.log('Error fetching recent block numbers', error);
           return throwError(() => new Error(error));
         })
       );

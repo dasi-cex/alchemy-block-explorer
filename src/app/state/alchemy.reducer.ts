@@ -1,7 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-
-import { BlockActions, BlockApiActions } from './alchemy.actions';
-import { Block } from 'alchemy-sdk';
+import { BlockApiActions, fetchBlockData, fetchRecentBlockNumbers } from './alchemy.actions';
 
 export const initialState = {
   fetchingBlockData: false
@@ -9,6 +7,8 @@ export const initialState = {
 
 export const alchemyReducer = createReducer(
   initialState,
-  on(BlockActions.fetchBlockData, (state, {blockNumber}) => {return {...state, fetchingBlockData: true}}),
-  on(BlockApiActions.retrievedBlockData, (state) => {return {...state, fetchingBlockData: false}})
+  on(fetchBlockData, (state, {blockNumber}) => {return {...state, fetchingBlockData: true}}),
+  on(fetchRecentBlockNumbers, (state) => {return {...state, fetchingBlockData: true}}),
+  on(BlockApiActions.retrievedBlockData, (state) => {return {...state, fetchingBlockData: false}}),
+  on(BlockApiActions.retrievedRecentBlockNumbers, (state) => {return {...state, fetchingBlockData: false}}),
 )

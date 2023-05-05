@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AlchemyService } from '../services/alchemy.service';
-import { BlockActions, BlockApiActions } from '../state/alchemy.actions';
+import { BlockApiActions, fetchBlockData } from '../state/alchemy.actions';
 import { Observable, map, tap } from 'rxjs';
 import { Block } from 'alchemy-sdk';
 
@@ -31,8 +31,8 @@ export class BlockDetailsComponent {
     this.getBlockData(blockNumber);
   }
 
-  getBlockData(blockNumber: string) {
-    this.store.dispatch(BlockActions.fetchBlockData({blockNumber}));
+  private getBlockData(blockNumber: string) {
+    this.store.dispatch(fetchBlockData({blockNumber}));
     this.blockData$ = this.alchemyService.fetchBlockData(blockNumber)
       .pipe(
         map(blockData => {
