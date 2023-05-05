@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AlchemyService } from '../services/alchemy.service';
-import { BlockApiActions, fetchBlockData } from '../state/alchemy.actions';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, catchError, map, tap, throwError } from 'rxjs';
 import { Block } from 'alchemy-sdk';
+import { AlchemyStoreActions, RootStoreState } from '../root-store';
+import { FirebaseError } from '@angular/fire/app';
 
 @Component({
   selector: 'app-block-details',
@@ -17,7 +18,7 @@ export class BlockDetailsComponent {
 
   constructor(
     private route: ActivatedRoute,
-    private store: Store,
+    private store: Store<RootStoreState.AppState>,
     private alchemyService: AlchemyService
   ) {}
 
@@ -32,7 +33,7 @@ export class BlockDetailsComponent {
   }
 
   private getBlockData(blockNumber: string) {
-    this.store.dispatch(fetchBlockData({blockNumber}));
+    this.store.dispatch(AlchemyStoreActions.fetchBlockData({blockNumber}));
     this.blockData$ = this.alchemyService.fetchBlockData(blockNumber)
       .pipe(
         map(blockData => {
@@ -40,7 +41,16 @@ export class BlockDetailsComponent {
           return blockData;
         }),
         tap(blockData => {
-          this.store.dispatch(BlockApiActions.retrievedBlockData({blockData}));  
+          this.store.dispatch(AlchemyStoreActions.BlockApiActions.fetchBlockDataSucceeded({blockData}));  
+        }),
+        catchError(error => {
+          const fbError: FirebaseError = {
+            code: error.code,
+            message: error.message,
+            name: error.name
+          };
+          this.store.dispatch(AlchemyStoreActions.BlockApiActions.fetchBlockDataFailed({error: fbError}));
+          return throwError(() => new Error(error));
         })
     )
   }

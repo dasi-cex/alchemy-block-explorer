@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, catchError, map, of, tap, throwError } from 'rxjs';
 import { AlchemyService } from '../services/alchemy.service';
-import { BlockApiActions, fetchRecentBlockNumbers } from '../state/alchemy.actions';
+import { AlchemyStoreActions, RootStoreState } from '../root-store';
+import { FirebaseError } from '@angular/fire/app';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,7 +15,7 @@ export class DashboardComponent {
   recentBlockNumbers$!: Observable<string[]>;
 
   constructor(
-    private store: Store,
+    private store: Store<RootStoreState.AppState>,
     private alchemyService: AlchemyService
   ) {}
 
@@ -25,7 +26,7 @@ export class DashboardComponent {
   }
 
   private getRecentBlockNumbers() {
-    this.store.dispatch(fetchRecentBlockNumbers());
+    this.store.dispatch(AlchemyStoreActions.fetchRecentBlockNumbers());
     this.recentBlockNumbers$ = this.alchemyService.fetchRecentBlockNumbers()
       .pipe(
         map(recentBlockNumbers => {
@@ -33,7 +34,16 @@ export class DashboardComponent {
           return recentBlockNumbers;
         }),
         tap(recentBlockNumbers => {
-          this.store.dispatch(BlockApiActions.retrievedRecentBlockNumbers({recentBlockNumbers}));  
+          this.store.dispatch(AlchemyStoreActions.BlockApiActions.fetchRecentBlockNumbersSucceeded({recentBlockNumbers}));  
+        }),
+        catchError(error => {
+          const fbError: FirebaseError = {
+            code: error.code,
+            message: error.message,
+            name: error.name
+          };
+          this.store.dispatch(AlchemyStoreActions.BlockApiActions.fetchRecentBlockNumbersFailed({error: fbError}));
+          return throwError(() => new Error(error));
         })
     )
   }

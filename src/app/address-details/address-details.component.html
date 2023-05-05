@@ -1,0 +1,29 @@
+<div class="container">
+  <div *ngIf="address">
+    <h1 class="mat-display-4">{{ address }}</h1>
+  </div>
+  <div class="address-data">
+    <div *ngIf="ethBalance$ | async as balance" class="address-details">
+      <h2>Balance: {{ balance | number: '1.2-4' }} ETH</h2>
+    </div>
+    <div class="transaction-data">
+      <div *ngIf="recentTransactions$ | async as recentTransactions" class="address-details">
+        <h1>Recently Received Transactions</h1>
+        <ul>
+          <li *ngFor="let receivedTransaction of recentTransactions.receivedTransactions; first as isFirst">
+            <a routerLink="/transaction/{{ receivedTransaction.hash }}">{{ receivedTransaction.hash }}</a> <span *ngIf="isFirst"> (Latest)</span>
+          </li>
+        </ul>
+        <h1>Recently Sent Transactions</h1>
+        <ul>
+          <li *ngFor="let sentTransaction of recentTransactions.sentTransactions; first as isFirst">
+            <a routerLink="/transaction/{{ sentTransaction.hash }}">{{ sentTransaction.hash }}</a> <span *ngIf="isFirst"> (Latest)</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="(serverRequestProcessing$ | async)">
+    <mat-progress-spinner diameter=40 color="primary" mode="indeterminate"></mat-progress-spinner>
+  </div>
+</div>

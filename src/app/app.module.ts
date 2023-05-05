@@ -1,4 +1,4 @@
-import { NgModule, isDevMode } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -9,19 +9,17 @@ import { environment } from '../environments/environment';
 import { provideFunctions,getFunctions, connectFunctionsEmulator } from '@angular/fire/functions';
 import { BlockDetailsComponent } from './block-details/block-details.component';
 import { TransactionDetailsComponent } from './transaction-details/transaction-details.component';
-import { AccountDetailsComponent } from './account-details/account-details.component';
-import { StoreModule } from '@ngrx/store';
-import { alchemyReducer } from './state/alchemy.reducer';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { AddressDetailsComponent } from './address-details/address-details.component';
+import { RootStoreModule } from './root-store';
 
 @NgModule({
   declarations: [
     AppComponent,
     BlockDetailsComponent,
     TransactionDetailsComponent,
-    AccountDetailsComponent,
-    DashboardComponent
+    DashboardComponent,
+    AddressDetailsComponent
   ],
   imports: [
     BrowserModule,
@@ -35,8 +33,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
       }
       return functions;
     }),
-    StoreModule.forRoot({alchemyData: alchemyReducer}, {}),
-    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
+    RootStoreModule
   ],
   providers: [],
   bootstrap: [AppComponent]

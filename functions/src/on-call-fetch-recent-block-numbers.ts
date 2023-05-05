@@ -2,14 +2,15 @@ import * as functions from 'firebase-functions';
 import { SecretsManagerKeyNames } from '../../shared-models/environments/env-vars.model';
 import { alchemy } from './config';
 
-const getLatestBlockNumber = async () => {
-  const blockNumber = await alchemy.core.getBlockNumber();
+const fetchLatestBlockNumber = async () => {
+  const blockNumber = await alchemy.core.getBlockNumber()
+    .catch(err => {functions.logger.log(`Failed to fetch latest block number:`, err); throw new functions.https.HttpsError('internal', err);});
   functions.logger.log(`Found this latest block:`, blockNumber);
   return blockNumber;
 }
 
 const generateLastTenBlockNumbers = async () => {
-  const startingBlock = await getLatestBlockNumber();
+  const startingBlock = await fetchLatestBlockNumber();
   let currentBlock = startingBlock;
   const recentBlocksArray = [];
   for (let i = 0; i < 10; i++) {

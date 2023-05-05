@@ -8,7 +8,7 @@
   margin-left: 32px;
 }
 
-button {
-  width: 400px;
-  max-width: 90%;
+.transaction-data {
+  display: flex;
+  flex-flow: row wrap;
 }

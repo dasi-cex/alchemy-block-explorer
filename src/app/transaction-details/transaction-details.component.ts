@@ -6,5 +6,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./transaction-details.component.scss']
 })
 export class TransactionDetailsComponent {
-
+  // TODO: Implement this component
+  // TODO: add loading indicators to all components
 }

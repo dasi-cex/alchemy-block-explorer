@@ -2,6 +2,6 @@
   <div *ngIf="blockData$ | async as blockData" class="block-details">
     <h1>Block {{ blockData.number }}</h1>
     <div>Transaction Count: {{ blockData.transactions.length }}</div>
-    <div>Proposer: {{ blockData.miner }}</div>
+    <div>Proposer: <a routerLink="/address/{{ blockData.miner }}">{{ blockData.miner }}</a></div>
   </div>
 </div>
