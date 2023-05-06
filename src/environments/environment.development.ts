@@ -1,10 +1,10 @@
 export const environment = {
   production: false,
   firebase: {
-    projectId: 'alchemy-university',
-    appId: '1:968421205388:web:cf16c56a24dd4fc98be2a9',
-    storageBucket: 'alchemy-university.appspot.com',
-    apiKey: 'AIzaSyB8nuyxBDeL1cq-d79RUUSkmDpLtScDHCw',
-    authDomain: 'alchemy-university.firebaseapp.com',
-    messagingSenderId: '968421205388',
+    apiKey: "AIzaSyCmtXGAlZnR2nfZeSW1AD5uq4_qoipoyVM",
+    authDomain: "alchemy-block-explorer.firebaseapp.com",
+    projectId: "alchemy-block-explorer",
+    storageBucket: "alchemy-block-explorer.appspot.com",
+    messagingSenderId: "494777980180",
+    appId: "1:494777980180:web:fedfb0f287b62d0399de01"
   },};

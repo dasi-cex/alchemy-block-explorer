@@ -1,12 +1,12 @@
 {
   "projects": {
-    "default": "alchemy-university"
+    "default": "alchemy-block-explorer"
   },
   "targets": {
-    "alchemy-university": {
+    "alchemy-block-explorer": {
       "hosting": {
         "ng-blockexplorer": [
-          "alchemy-university"
+          "alchemy-block-explorer"
         ]
       }
     }

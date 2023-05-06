@@ -112,8 +112,8 @@
             "prerender": false,
             "ssr": false,
             "browserTarget": "ng-blockexplorer:build:production",
-            "firebaseProject": "alchemy-university",
-            "firebaseHostingSite": "alchemy-university"
+            "firebaseProject": "alchemy-block-explorer",
+            "firebaseHostingSite": "alchemy-block-explorer"
           }
         }
       }
