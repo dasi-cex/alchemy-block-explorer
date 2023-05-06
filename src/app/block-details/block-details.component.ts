@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { AlchemyService } from '../services/alchemy.service';
-import { Observable, catchError, map, tap, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Block } from 'alchemy-sdk';
-import { AlchemyStoreActions, RootStoreState } from '../root-store';
-import { FirebaseError } from '@angular/fire/app';
+import { AlchemyStoreActions, AlchemyStoreSelectors, RootStoreState } from '../root-store';
+import { UrlParamKeys } from 'shared-models/routes-and-paths/url-param-keys.model';
 
 @Component({
   selector: 'app-block-details',
@@ -14,45 +13,33 @@ import { FirebaseError } from '@angular/fire/app';
 })
 export class BlockDetailsComponent {
 
-  blockData$!: Observable<Block>;
+  blockData$!: Observable<Block | null>;
+
+  serverRequestProcessing$!: Observable<boolean>;
 
   constructor(
     private route: ActivatedRoute,
     private store: Store<RootStoreState.AppState>,
-    private alchemyService: AlchemyService
   ) {}
 
   ngOnInit() {
-    let blockNumber = this.route.snapshot.paramMap.get('blockNumber'); // Load in blocknumber parameter if it exists
+    let blockNumber = this.route.snapshot.paramMap.get(UrlParamKeys.BLOCK_NUMBER); // Load in blocknumber parameter if it exists
     console.log('Fetching data for this block number', blockNumber);
     if (!blockNumber) {
       console.log('No block number specified, fetching latest block');
       blockNumber = 'latest';
     }
+    this.monitorServerRequests();
     this.getBlockData(blockNumber);
   }
 
+  private monitorServerRequests() {
+    this.serverRequestProcessing$ = this.store.select(AlchemyStoreSelectors.selectFetchBlockDataProcessing);
+  }
+
   private getBlockData(blockNumber: string) {
+    this.blockData$ = this.store.select(AlchemyStoreSelectors.selectFetchBlockDataResult);
     this.store.dispatch(AlchemyStoreActions.fetchBlockData({blockNumber}));
-    this.blockData$ = this.alchemyService.fetchBlockData(blockNumber)
-      .pipe(
-        map(blockData => {
-          console.log('Loaded this block data into component', blockData);
-          return blockData;
-        }),
-        tap(blockData => {
-          this.store.dispatch(AlchemyStoreActions.BlockApiActions.fetchBlockDataSucceeded({blockData}));  
-        }),
-        catchError(error => {
-          const fbError: FirebaseError = {
-            code: error.code,
-            message: error.message,
-            name: error.name
-          };
-          this.store.dispatch(AlchemyStoreActions.BlockApiActions.fetchBlockDataFailed({error: fbError}));
-          return throwError(() => new Error(error));
-        })
-    )
   }
 
 }

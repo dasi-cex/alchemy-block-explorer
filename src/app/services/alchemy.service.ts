@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Functions, httpsCallableData } from '@angular/fire/functions';
-import { Observable, catchError, map, take, throwError } from 'rxjs';
+import { Observable, catchError, map, shareReplay, take, throwError } from 'rxjs';
 import { PublicFunctionNames } from 'shared-models/routes-and-paths/fb-function-names.model';
 import { Block, TransactionResponse } from 'alchemy-sdk';
 import { RecentTransactionsBundle } from 'shared-models/alchemy-api/recent-transactions-bundle.model';
@@ -31,6 +31,7 @@ export class AlchemyService {
           }
           return balance;
         }),
+        shareReplay(),
         catchError(error => {
           console.log('Error fetching balance', error);
           return throwError(() => new Error(error));
@@ -57,6 +58,7 @@ export class AlchemyService {
           }
           return blockData;
         }),
+        shareReplay(),
         catchError(error => {
           console.log('Error fetching block data', error);
           return throwError(() => new Error(error));
@@ -83,6 +85,7 @@ export class AlchemyService {
           }
           return recentBlockNumbers;
         }),
+        shareReplay(),
         catchError(error => {
           console.log('Error fetching recent transactions', error);
           return throwError(() => new Error(error));
@@ -109,6 +112,7 @@ export class AlchemyService {
           }
           return recentRecentTransactions;
         }),
+        shareReplay(),
         catchError(error => {
           console.log('Error fetching recent transactions', error);
           return throwError(() => new Error(error));
@@ -129,14 +133,15 @@ export class AlchemyService {
       .pipe(
         take(1),
         map(recentTransactionData => {
-          console.log('Fetched these recent transactions:', recentTransactionData);
+          console.log('Fetched this transaction data:', recentTransactionData);
           if (!recentTransactionData) {
-            throw new Error(`Error fetching recent transactions`);
+            throw new Error(`Error fetching transaction data`);
           }
           return recentTransactionData;
         }),
+        shareReplay(),
         catchError(error => {
-          console.log('Error fetching recent transactions', error);
+          console.log('Error fetching transaction data', error);
           return throwError(() => new Error(error));
         })
       );

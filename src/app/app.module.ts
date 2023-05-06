@@ -33,7 +33,7 @@ import { RootStoreModule } from './root-store';
       }
       return functions;
     }),
-    RootStoreModule
+    RootStoreModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable, catchError, combineLatest, map, tap, throwError } from 'rxjs';
+import { Observable, combineLatest, map } from 'rxjs';
 import { RecentTransactionsBundle } from 'shared-models/alchemy-api/recent-transactions-bundle.model';
-import { AlchemyService } from '../services/alchemy.service';
 import { AlchemyStoreActions, AlchemyStoreSelectors, RootStoreState } from '../root-store';
-import { FirebaseError } from '@angular/fire/app';
+import { UrlParamKeys } from 'shared-models/routes-and-paths/url-param-keys.model';
 
 @Component({
   selector: 'app-address-details',
@@ -15,19 +14,18 @@ import { FirebaseError } from '@angular/fire/app';
 export class AddressDetailsComponent {
   
   address!: string;
-  ethBalance$!: Observable<string>;
-  recentTransactions$!: Observable<RecentTransactionsBundle>;
+  ethBalance$!: Observable<string | null>;
+  recentTransactions$!: Observable<RecentTransactionsBundle | null>;
   serverRequestProcessing$!: Observable<boolean>;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private store: Store<RootStoreState.AppState>,
-    private alchemyService: AlchemyService
   ) {}
 
   ngOnInit() {
-    const address = this.route.snapshot.paramMap.get('address'); // Load address parameter
+    const address = this.route.snapshot.paramMap.get(UrlParamKeys.ADDRESS); // Load address parameter
     console.log('Fetching data for this address', address);
     if (!address) {
       console.log('No address parameter found, navigating to home');
@@ -57,48 +55,12 @@ export class AddressDetailsComponent {
   }
 
   private getBalance(address: string) {
+    this.ethBalance$ = this.store.select(AlchemyStoreSelectors.selectFetchBalanceResult);
     this.store.dispatch(AlchemyStoreActions.fetchBalance({address}));
-    this.ethBalance$ = this.alchemyService.fetchBalance(address)
-      .pipe(
-        map(ethBalance => {
-          console.log('Loaded this ethe balance into component', ethBalance);
-          return ethBalance;
-        }),
-        tap(ethBalance => {
-          this.store.dispatch(AlchemyStoreActions.BlockApiActions.fetchBalanceSucceeded({balance: ethBalance}));  
-        }),
-        catchError(error => {
-          const fbError: FirebaseError = {
-            code: error.code,
-            message: error.message,
-            name: error.name
-          };
-          this.store.dispatch(AlchemyStoreActions.BlockApiActions.fetchBalanceFailed({error: fbError}));
-          return throwError(() => new Error(error));
-        })
-    )
   }
 
   private getRecentTransactions(address: string) {
+    this.recentTransactions$ = this.store.select(AlchemyStoreSelectors.selectFetchRecentTransactionsResult);
     this.store.dispatch(AlchemyStoreActions.fetchRecentTransactions({address}));
-    this.recentTransactions$ = this.alchemyService.fetchRecentTransactions(address)
-      .pipe(
-        map(recentTransactions => {
-          console.log('Loaded these recent transactions into component', recentTransactions);
-          return recentTransactions;
-        }),
-        tap(recentTransactions => {
-          this.store.dispatch(AlchemyStoreActions.BlockApiActions.fetchRecentTransactionsSucceeded({recentTransactions}));  
-        }),
-        catchError(error => {
-          const fbError: FirebaseError = {
-            code: error.code,
-            message: error.message,
-            name: error.name
-          };
-          this.store.dispatch(AlchemyStoreActions.BlockApiActions.fetchBalanceFailed({error: fbError}));
-          return throwError(() => new Error(error));
-        })
-    )
   }
 }

@@ -1,14 +1,18 @@
 .container {
-  width: 100%;
   display: flex;
   flex-flow: column wrap;
   align-items: flex-start;
   justify-content: center;
-  margin-top: 32px;
-  margin-left: 32px;
+  padding-top: 32px;
+  padding-left: 32px;
 }
 
-.transaction-data {
-  display: flex;
-  flex-flow: row wrap;
+.address-data {
+  inline-size: 90%;
+  overflow-wrap: break-word;
+}
+
+h1 {
+  inline-size: 90%;
+  overflow-wrap: break-word;
 }

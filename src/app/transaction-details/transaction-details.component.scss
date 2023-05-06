@@ -1,0 +1,20 @@
+.container {
+  display: flex;
+  flex-flow: column wrap;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 32px;
+  padding-left: 32px;
+}
+
+.block-details {
+  display: flex;
+  flex-flow: column wrap;
+  inline-size: 90%;
+  overflow-wrap: break-word;
+}
+
+h1 {
+  inline-size: 90%;
+  overflow-wrap: break-word;
+}

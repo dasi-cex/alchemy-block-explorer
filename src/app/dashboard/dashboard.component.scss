@@ -1,11 +1,10 @@
 .container {
-  width: 100%;
   display: flex;
   flex-flow: column wrap;
   align-items: flex-start;
   justify-content: center;
-  margin-top: 32px;
-  margin-left: 32px;
+  padding-top: 32px;
+  padding-left: 32px;
 }
 
 button {
